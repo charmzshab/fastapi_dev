@@ -19,7 +19,8 @@ class UserOut(BaseModel):
     email: EmailStr
     created_at: datetime
 
-    class Config:
+    # pydantic uses this class to convert the sqlalchemy class to a pydantic model
+    class Config: 
         orm_mode = True
 
 
