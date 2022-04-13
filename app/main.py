@@ -1,18 +1,19 @@
+from turtle import title
 from typing import Optional
 from fastapi import FastAPI, Response, status, HTTPException, Depends
 from fastapi.params import Body
-# from pydantic import randrange
 import psycopg2
 from psycopg2.extras import RealDictCursor
+from pydantic import BaseModel
 
 from sqlalchemy.orm import Session
-from . import models
+from . import models, schemas
 from .database import engine, get_db
-
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
 
 
 
@@ -28,10 +29,6 @@ except Exception as error:
 def root():
     return {"message": "Welcome to our api"}
 
-@app.get("/sqlalchemy")
-def test_posts(db: Session = Depends(get_db)):
-    posts = db.query(models.Post).all()
-    return {"data": posts}
 
 
 
