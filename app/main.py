@@ -4,11 +4,14 @@ from fastapi.params import Body
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from pydantic import BaseModel
+from passlib.context import CryptContext
 
 from sqlalchemy.orm import Session
 from . import models, schemas
 from .database import engine, get_db
 
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -97,7 +100,10 @@ def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends
 
 @app.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-
+    # hash the password - user.password
+    hashed_pwd = pwd_context.hash(user.password)
+    user.password = hashed_pwd
+    
     new_user = models.User(**user.dict())
     db.add(new_user)
     db.commit()
