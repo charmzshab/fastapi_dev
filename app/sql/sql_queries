@@ -1,0 +1,2 @@
+select posts.id, COUNT(votes.post_id) from posts left join votes on posts.id = votes.post_id where posts.id = 28 group by posts.id;
+select posts.*, COUNT(votes.post_id) as votes from posts left join votes on posts.id = votes.post_id group by posts.id;
